@@ -1,0 +1,1242 @@
+{
+    "package": "Viber",
+    "tagline": "Viber API",
+    "description": "With Viber\u2019s APIs, you can create unique experiences for users at scale. There are no registration fees and our team is here to support you through the development and integration process.",
+    "image": "https://logo.clearbit.com/viber.com",
+    "repo": "https://github.com/RapidSoftwareSolutions/Marketplace-Viber-Package",
+    "keywords": [
+        "API",
+        "viber",
+        "message",
+        "call",
+        "rakuten"
+    ],
+    "accounts": {
+        "domain": "https://www.viber.com/",
+        "credentials": [
+            "token"
+        ]
+    },
+    "events": [
+        {
+            "name": "webhookEvent",
+            "description": "This webhook will be used for receiving callbacks and user messages from Viber.",
+            "payload": {
+                "status": 0,
+                "status_message": "ok",
+                "event_types": [
+                    "delivered",
+                    "seen",
+                    "failed",
+                    "subscribed",
+                    "unsubscribed",
+                    "conversation_started"
+                ]
+            },
+            "steps": [
+                "Navigate to setWebhook block",
+                "Set url to __WEBHOOK_URL__"
+            ],
+            "args": [
+                {
+                    "name": "token",
+                    "type": "string",
+                    "info": "Your viber token",
+                    "required": false
+                }
+            ]
+        }
+    ],
+    "blocks": [
+        {
+            "name": "setWebhook",
+            "description": "Webhook will be used for receiving callbacks and user messages from Viber.",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "url",
+                    "type": "String",
+                    "info": " Account webhook URL to receive callbacks & messages from users. Webhook URL must use SSL.",
+                    "required": true
+                },
+                {
+                    "name": "eventTypes",
+                    "type": "List",
+                    "info": "Indicates the types of Viber events that the account owner would like to be notified about. Don\u2019t include this parameter in your request to get all events",
+                    "required": false,
+                    "structure": {
+                        "name": "event",
+                        "type": "Select",
+                        "options": [
+                            "delivered",
+                            "seen",
+                            "failed",
+                            "subscribed",
+                            "unsubscribed",
+                            "conversation_started"
+                        ],
+                        "info": "If you do not specify raw, you must specify the URL to scan here. Possible values: delivered, seen, failed, subscribed, unsubscribed and conversation_started",
+                        "required": false
+                    },
+                    "vendorSchema": {
+                        "name": "event_types"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/set_webhook",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "url",
+                            "eventTypes"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                }
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "deleteAllWebhooks",
+            "description": "Cancel webhooks event",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/set_webhook",
+                "method": "post",
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "url": " "
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendTextMessage",
+            "description": "Send text messages to Viber users who subscribe to the account. ",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "text",
+                    "type": "String",
+                    "info": "The text of the message",
+                    "required": true
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "trackingData",
+                    "type": "String",
+                    "info": "Allow the account to track messages and user\u2019s replies. Sent tracking_data value will be passed back with user\u2019s reply",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "tracking_data"
+                    }
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "sender",
+                            "tracking_data",
+                            "text"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "text"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendPicture",
+            "description": "Send picture messages to Viber users who subscribe to the account. ",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "text",
+                    "type": "String",
+                    "info": "Description of the photo.",
+                    "required": true
+                },
+                {
+                    "name": "media",
+                    "type": "String",
+                    "info": "URL of the image (JPEG).  Max size 1 MB. Only JPEG format is supported. Other image formats as well as animated GIFs can be sent as URL messages or file messages",
+                    "required": true
+                },
+                {
+                    "name": "thumbnail",
+                    "type": "String",
+                    "info": "URL of a reduced size image (JPEG). Max size 100 kb. Recommended: 400x400. Only JPEG format is supported",
+                    "required": false
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "trackingData",
+                    "type": "String",
+                    "info": "Allow the account to track messages and user\u2019s replies. Sent tracking_data value will be passed back with user\u2019s reply",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "tracking_data"
+                    }
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "sender",
+                            "tracking_data",
+                            "text",
+                            "media",
+                            "thumbnail"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "picture"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendVideo",
+            "description": "Send video messages to Viber users who subscribe to the account. ",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "media",
+                    "type": "String",
+                    "info": "URL of the video (MP4, H264). Max size 50 MB. Only MP4 and H264 are supported",
+                    "required": true
+                },
+                {
+                    "name": "size",
+                    "type": "Number",
+                    "info": "Size of the video in bytes",
+                    "required": true
+                },
+                {
+                    "name": "duration",
+                    "type": "Number",
+                    "info": "Video duration in seconds; will be displayed to the receiver. Max 180 seconds",
+                    "required": false
+                },
+                {
+                    "name": "thumbnail",
+                    "type": "String",
+                    "info": "URL of a reduced size image (JPEG). Max size 100 kb. Recommended: 400x400. Only JPEG format is supported",
+                    "required": false
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "trackingData",
+                    "type": "String",
+                    "info": "Allow the account to track messages and user\u2019s replies. Sent tracking_data value will be passed back with user\u2019s reply",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "tracking_data"
+                    }
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "sender",
+                            "tracking_data",
+                            "media",
+                            "thumbnail",
+                            "size",
+                            "duration"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "video"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendFile",
+            "description": "Send file messages to Viber users who subscribe to the account. ",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "media",
+                    "type": "String",
+                    "info": "URL of the file. Max size 50 MB. See forbidden file formats for unsupported file types",
+                    "required": true
+                },
+                {
+                    "name": "size",
+                    "type": "Number",
+                    "info": "Size of the file in bytes",
+                    "required": true
+                },
+                {
+                    "name": "fileName",
+                    "type": "String",
+                    "info": "Name of the file. File name should include extension. Max 256 characters (including file extension). Sending a file without extension or with the wrong extension might cause the client to be unable to open the file",
+                    "required": true,
+                    "vendorSchema": {
+                        "name": "file_name"
+                    }
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "trackingData",
+                    "type": "String",
+                    "info": "Allow the account to track messages and user\u2019s replies. Sent tracking_data value will be passed back with user\u2019s reply",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "tracking_data"
+                    }
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "sender",
+                            "tracking_data",
+                            "media",
+                            "size",
+                            "file_name"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "file"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendContact",
+            "description": "Send contact messages to Viber users who subscribe to the account. ",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "contactName",
+                    "type": "String",
+                    "info": "Name of the contact",
+                    "required": true
+                },
+                {
+                    "name": "contactPhone",
+                    "type": "String",
+                    "info": "Phone number of the contact",
+                    "required": true
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "trackingData",
+                    "type": "String",
+                    "info": "Allow the account to track messages and user\u2019s replies. Sent tracking_data value will be passed back with user\u2019s reply",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "tracking_data"
+                    }
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "sender",
+                            "tracking_data",
+                            "contact"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "contact",
+                        "contact": {
+                            "name": "{contactName}",
+                            "phone_number": "{contactPhone}"
+                        }
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendLocation",
+            "description": "Send location messages to Viber users who subscribe to the account. ",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "coordinates",
+                    "type": "Map",
+                    "info": "Location coordinates",
+                    "required": true
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "trackingData",
+                    "type": "String",
+                    "info": "Allow the account to track messages and user\u2019s replies. Sent tracking_data value will be passed back with user\u2019s reply",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "tracking_data"
+                    }
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "sender",
+                            "tracking_data"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "location"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendUrl",
+            "description": "Send url messages to Viber users who subscribe to the account. ",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "media",
+                    "type": "String",
+                    "info": "URL",
+                    "required": true
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "trackingData",
+                    "type": "String",
+                    "info": "Allow the account to track messages and user\u2019s replies. Sent tracking_data value will be passed back with user\u2019s reply",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "tracking_data"
+                    }
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "sender",
+                            "tracking_data",
+                            "media"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "url"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendSticker",
+            "description": "Send sticker messages to Viber users who subscribe to the account. ",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "contactName",
+                    "type": "String",
+                    "info": "Name of the contact",
+                    "required": true
+                },
+                {
+                    "name": "stickerId",
+                    "type": "String",
+                    "info": "Unique Viber sticker ID. For examples visit the https://developers.viber.com/docs/tools/sticker-ids page",
+                    "required": true,
+                    "vendorSchema": {
+                        "name": "sticker_id"
+                    }
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "trackingData",
+                    "type": "String",
+                    "info": "Allow the account to track messages and user\u2019s replies. Sent tracking_data value will be passed back with user\u2019s reply",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "tracking_data"
+                    }
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "sender",
+                            "tracking_data",
+                            "sticker_id"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "sticker"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendCarouselContentMessage",
+            "description": "The Carousel Content Message type allows a user to scroll through a list of items, each composed of an image, description and call to action button.",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "receiver",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                },
+                {
+                    "name": "richMedia",
+                    "type": "JSON",
+                    "info": "Carousel object",
+                    "required": true,
+                    "vendorSchema": {
+                        "name": "rich_media"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/send_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "receiver",
+                            "min_api_version",
+                            "rich_media"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "type": "rich_media"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "sendBroadcastMessage",
+            "description": "Send messages to multiple Viber users who subscribe to the account. Sending a message to a user will be possible only after the user has subscribed to the Public Account by pressing the subscribe button or by sending a message, or by sending a message to a bot. The ability to send broadcast messages is only opened on application and approval from Viber account managers.",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "senderName",
+                    "type": "String",
+                    "info": "The sender\u2019s name to display",
+                    "required": true
+                },
+                {
+                    "name": "senderAvatar",
+                    "type": "String",
+                    "info": "The sender\u2019s avatar URL",
+                    "required": false
+                },
+                {
+                    "name": "minApiVersion",
+                    "type": "String",
+                    "info": "Minimal API version required by clients for this message ",
+                    "required": false,
+                    "vendorSchema": {
+                        "name": "min_api_version"
+                    }
+                },
+                {
+                    "name": "broadcastList",
+                    "type": "List",
+                    "info": "Recipients for the message.",
+                    "required": true,
+                    "structure": {
+                        "name": "recipient",
+                        "type": "string",
+                        "info": "Recipient id",
+                        "required": true
+                    },
+                    "vendorSchema": {
+                        "name": "broadcast_list"
+                    }
+                },
+                {
+                    "name": "richMedia",
+                    "type": "JSON",
+                    "info": "Carousel object",
+                    "required": true,
+                    "vendorSchema": {
+                        "name": "rich_media"
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/broadcast_message",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "sender",
+                            "min_api_version",
+                            "broadcast_list",
+                            "rich_media"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                },
+                "vendorFieldsStructure": [
+                    {
+                        "sender": {
+                            "name": "{senderName}",
+                            "avatar": "{senderAvatar}"
+                        },
+                        "type": "rich_media"
+                    }
+                ]
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "getAccountInfo",
+            "description": "Fetch the account\u2019s details as registered in Viber. The account admin will be able to edit most of these details from his Viber client.",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/get_account_info",
+                "method": "get",
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                }
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "getUserDetails",
+            "description": "Fetch the details of a specific Viber user based on his unique user ID. The user ID can be obtained from the callbacks sent to the account regarding user\u2019s actions. This request can be sent twice during a 12 hours period for each user ID.",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "id",
+                    "type": "String",
+                    "info": "Unique Viber user id",
+                    "required": true
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/get_user_details",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "id"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                }
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        },
+        {
+            "name": "getOnlineStatus",
+            "description": "Fetch the online status of a given subscribed account members. The API supports up to 100 user id per request and those users must be subscribed to the account.",
+            "args": [
+                {
+                    "name": "token",
+                    "type": "credentials",
+                    "info": "Your viber token",
+                    "required": true
+                },
+                {
+                    "name": "ids",
+                    "type": "List",
+                    "info": "Unique Viber user ids",
+                    "required": true,
+                    "structure": {
+                        "name": "id",
+                        "type": "List",
+                        "info": "User id",
+                        "required": true
+                    }
+                }
+            ],
+            "vendorRequest": {
+                "url": "https://chatapi.viber.com/pa/get_online",
+                "method": "post",
+                "requestParameters": [
+                    {
+                        "type": "json",
+                        "parameters": [
+                            "ids"
+                        ]
+                    }
+                ],
+                "headers": {
+                    "X-Viber-Auth-Token": "{$data['token']}"
+                }
+            },
+            "callbacks": [
+                {
+                    "name": "error",
+                    "info": "Error"
+                },
+                {
+                    "name": "success",
+                    "info": "Success"
+                }
+            ]
+        }
+    ]
+}
