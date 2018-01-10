@@ -178,13 +178,19 @@
                     "name": "senderName",
                     "type": "String",
                     "info": "The sender\u2019s name to display",
-                    "required": true
+                    "required": true,
+                    "vendorSchema": {
+                        "format":"toString:{,}"
+                    }
                 },
                 {
                     "name": "senderAvatar",
                     "type": "String",
                     "info": "The sender\u2019s avatar URL",
-                    "required": false
+                    "required": false,
+                    "vendorSchema": {
+                        "format":"toString:{,}"
+                    }
                 },
                 {
                     "name": "trackingData",
@@ -1209,7 +1215,7 @@
                     "required": true,
                     "structure": {
                         "name": "id",
-                        "type": "List",
+                        "type": "String",
                         "info": "User id",
                         "required": true
                     }
