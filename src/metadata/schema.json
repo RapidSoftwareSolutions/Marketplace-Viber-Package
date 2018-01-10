@@ -17,6 +17,9 @@
             "token"
         ]
     },
+    "steps": [
+        "The authentication token is generated upon account creation and can be viewed by the account’s admins in the “edit info” screen of their Public Account/ bot or on the Viber Admin Panel."
+    ],
     "events": [
         {
             "name": "webhookEvent",
