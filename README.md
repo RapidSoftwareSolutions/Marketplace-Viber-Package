@@ -2,7 +2,7 @@
 
 # Viber Package
 With Viber’s APIs, you can create unique experiences for users at scale. There are no registration fees and our team is here to support you through the development and integration process.
-* Domain: [viber.com](https://www.viber.com/)
+* Domain: [viber](https://www.viber.com/)
 * Credentials: token
 
 ## How to get credentials:  
